@@ -1,7 +1,3 @@
-server:
-  port: 8080
-  servlet:
-    context-path: /girl
-girl:
-  cupSize: B
-  age: 18
+spring:
+  profiles:
+    active: prod
