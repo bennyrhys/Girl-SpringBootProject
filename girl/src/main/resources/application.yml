@@ -1,0 +1,8 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /girl
+
+cupSize: B
+age: 18
+content: "cupSize:${cupSize},age:${age}" #引用配置中的配置
