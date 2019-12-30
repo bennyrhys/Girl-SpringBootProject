@@ -137,8 +137,8 @@ server:
   servlet:
     context-path: /girl
 
-cupSize: B
-age: 18
+cupSize: B #罩杯
+age: 18 #年龄
 content: "cupSize:${cupSize},age:${age}" #引用配置中的配置
 ```
 
@@ -194,7 +194,162 @@ B 18contentcupSize:B,age:18
 >
 >Unpacking objects: 100% (6/6), done.
 >
+>bennyrhysdeMacBook-Pro:Idea_Demo bennyrhys$ cd Girl-SpringBootProject/
+>
+>bennyrhysdeMacBook-Pro:Girl-SpringBootProject bennyrhys$ git status
+>
+>On branch master
+>
+>Your branch is up to date with 'origin/master'.
 >
 >
 >
+>Untracked files:
+>
+> (use "git add <file>..." to include in what will be committed)
+>
+>
+>
+>​	girl/
+>
+>​	girl_note.md
+>
+>
+>
+>nothing added to commit but untracked files present (use "git add" to track)
+>
+>bennyrhysdeMacBook-Pro:Girl-SpringBootProject bennyrhys$ git remote
+>
+>origin
+>
+>bennyrhysdeMacBook-Pro:Girl-SpringBootProject bennyrhys$ git add .
+>
+>bennyrhysdeMacBook-Pro:Girl-SpringBootProject bennyrhys$ git commit -m "单配置"
+>
+>[master 8545dc9] 单配置
+>
+> 7 files changed, 337 insertions(+)
+>
+> create mode 100644 girl/.gitignore
+>
+> create mode 100644 girl/pom.xml
+>
+> create mode 100644 girl/src/main/java/com/bennyrhys/girl/GirlApplication.java
+>
+> create mode 100644 girl/src/main/java/com/bennyrhys/girl/HelloController.java
+>
+> create mode 100644 girl/src/main/resources/application.yml
+>
+> create mode 100644 girl/src/test/java/com/bennyrhys/girl/GirlApplicationTests.java
+>
+> create mode 100644 girl_note.md
+>
+>bennyrhysdeMacBook-Pro:Girl-SpringBootProject bennyrhys$ git branch
+>
+>\* master
+>
+>bennyrhysdeMacBook-Pro:Girl-SpringBootProject bennyrhys$ git push origin master
+>
+>Enumerating objects: 23, done.
+>
+>Counting objects: 100% (23/23), done.
+>
+>Delta compression using up to 4 threads
+>
+>Compressing objects: 100% (14/14), done.
+>
+>Writing objects: 100% (22/22), 4.80 KiB | 2.40 MiB/s, done.
+>
+>Total 22 (delta 0), reused 0 (delta 0)
+>
+>To https://github.com/bennyrhys/Girl-SpringBootProject.git
+>
+>  d4be8b7..8545dc9 master -> master
 
+## 多个配置
+
+application.yml
+
+```
+server:
+  port: 8080
+  servlet:
+    context-path: /girl
+girl:
+  cupSize: B
+  age: 18
+```
+
+GirlConfig //新建配置文件
+
+```java
+package com.bennyrhys.girl;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+//对应配置文件的girl
+@ConfigurationProperties(prefix = "girl")
+//注入配置
+@Component
+public class GirlConfig {
+    private String cupSize;
+    private Integer age;
+
+    public String getCupSize() {
+        return cupSize;
+    }
+
+    public void setCupSize(String cupSize) {
+        this.cupSize = cupSize;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+}
+```
+
+HelloController
+
+```java
+package com.bennyrhys.girl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+    //通过注解获取配置:类中的属性
+    @Autowired
+    private GirlConfig girlConfig;
+
+
+
+    @RequestMapping(value = "/hello", method = RequestMethod.GET)
+    public String say(){
+        return girlConfig.getCupSize()+girlConfig.getAge();
+    }
+}
+```
+
+访问
+
+http://localhost:8080/girl/hello
+
+输出
+
+B18
+
+## git提交-多配置-master
+
+>
+>
+>
